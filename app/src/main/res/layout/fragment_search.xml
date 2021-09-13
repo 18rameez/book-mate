@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/green_200"
+        android:drawableLeft="@drawable/search_icon"
+        android:padding="15dp"
+        android:textColor="@color/blue"
+        android:drawablePadding="10dp"
+        android:hint="Eg: book-name, author-name"
+        />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/category_recycler"
+        android:layout_width="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_height="match_parent"/>
+</LinearLayout>

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1011792604495",
+    "firebase_url": "https://bookmate-bb1ff-default-rtdb.firebaseio.com",
+    "project_id": "bookmate-bb1ff",
+    "storage_bucket": "bookmate-bb1ff.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1011792604495:android:a84fd5e08840f593e1e93a",
+        "android_client_info": {
+          "package_name": "com.android.book"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1011792604495-t7fcodv9tsetnnksoem1e9p25s4k7fel.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-RQwkoyXQQhl0Hbh7UeinnpoSY_V_2cQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1011792604495-t7fcodv9tsetnnksoem1e9p25s4k7fel.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

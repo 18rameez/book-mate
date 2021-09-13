@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddBook">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <ImageView
+            android:id="@+id/select_image"
+            android:layout_width="match_parent"
+            android:src="@drawable/add_image_icon"
+            android:scaleType="fitCenter"
+            android:layout_height="150dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_image"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            />
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boxStrokeColor="@color/purple_200"
+            android:hint="Book Name">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/book_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boxStrokeColor="@color/purple_200"
+            android:hint="Author Name">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/book_author"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boxStrokeColor="#777777"
+            android:hint="Book Price">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/book_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boxStrokeColor="@color/green_200"
+            android:hint="Language">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/book_langugae"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boxStrokeColor="@color/green_200"
+            android:hint="Category">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/book_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boxStrokeWidth="0dp"
+            app:boxStrokeWidthFocused="0dp"
+            android:hint="Book Name">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/book_description"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:background="@color/white"
+                />
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/add_button"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:text="Add Book"
+            />
+
+    </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

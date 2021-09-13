@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#018786"
+    android:gravity="center"
+    app:cardElevation="3dp"
+    app:cardCornerRadius="5dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginBottom="5dp"
+    android:layout_marginTop="10dp"
+    android:layout_height="75dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:background="@color/green_200"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/price_title"
+            android:layout_width="match_parent"
+            android:text="Under ₹49"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textColor="@color/green_700"
+            android:textSize="16dp"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+
+
+</androidx.cardview.widget.CardView>
