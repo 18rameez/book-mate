@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 
 public class LoginActivity extends AppCompatActivity {
@@ -91,7 +92,10 @@ public class LoginActivity extends AppCompatActivity {
                 if (task.isSuccessful()){
                     Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
 
+                    FirebaseUser firebaseUser = auth.getCurrentUser();
+                    String userId =  firebaseUser.getUid();
                     editor.putBoolean("isLogin",true);
+                    editor.putBoolean("firebaseId",true);
                     editor.commit();
                     Intent intent =  new Intent(LoginActivity.this,MainActivity.class);
                     startActivity(intent);

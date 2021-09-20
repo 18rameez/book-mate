@@ -10,6 +10,7 @@
 
 
     <TextView
+        android:id="@+id/chat_button"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:background="@color/green_700"
@@ -43,36 +44,39 @@
 
 
         <TextView
+            android:id="@+id/book_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16dp"
             android:layout_marginTop="10dp"
             android:textStyle="bold"
             android:textColor="@color/black"
-            android:text="The Life and Opinions of Tristram Shandy"
+            android:text=""
             />
 
         <TextView
+            android:id="@+id/book_author_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textSize="15dp"
-            android:text="Publisher: Lorem ipsum dolor sit amet,"
+            android:text=""
             />
 
         <TextView
+            android:id="@+id/seller_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textSize="15dp"
-            android:text="Seller: Curabitur sit amet"
+            android:text=""
             />
 
         <TextView
             android:id="@+id/book_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="₹250"
+            android:text=""
             android:textStyle="bold"
             android:paddingLeft="10dp"
             android:textSize="15dp"
@@ -90,32 +94,35 @@
 
 
         <TextView
+            android:id="@+id/book_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:textColor="@color/black"
             android:textSize="15dp"
-            android:text="Morbi ut commodo neque. Quisque interdum magna nec mauris feugiat lacinia. Phasellus nec nunc sodales, bibendum nulla nec, porta felis. In et posuere nulla. Sed justo est, porttitor ut nisi sed, fermentum hendrerit lorem. Maecenas eu congue mi. Curabitur vel velit nunc. Sed a justo vel tortor aliquam accumsan pretium a tortor. Quisque consectetur urna libero, elementum luctus urna ultrices vel. Suspendisse imperdiet cursus nunc id dictum. Sed iaculis tellus et congue rhoncus."
+            android:text=""
             />
 
 
         <TextView
+            android:id="@+id/book_language"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:textColor="@color/black"
             android:textSize="15dp"
-            android:text="Language: English"
+            android:text=""
             />
 
 
         <TextView
+            android:id="@+id/book_added_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:textColor="@color/black"
             android:textSize="15dp"
-            android:text="Book added on: 21-07-2021"
+            android:text=""
             />
 
     </LinearLayout>

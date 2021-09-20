@@ -91,6 +91,7 @@ public class SignUpActivity extends AppCompatActivity {
                                       if (task.isSuccessful()){
 
                                           editor.putBoolean("isLogin",true);
+                                          editor.putString("firebaseId",userId);
                                           editor.commit();
                                           Intent intent =  new Intent(SignUpActivity.this,MainActivity.class);
                                           startActivity(intent);

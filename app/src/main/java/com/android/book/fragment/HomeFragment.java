@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.book.BookActivity;
+import com.android.book.BookList;
 import com.android.book.MainActivity;
 import com.android.book.R;
 import com.android.book.adapter.AdapterRecycleView;
@@ -27,6 +28,7 @@ import com.android.book.utils.APIError;
 import com.android.book.utils.APIInterface;
 import com.android.book.utils.RetrofitClientInstance;
 import com.google.android.gms.common.internal.service.Common;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -53,6 +55,7 @@ public class HomeFragment extends Fragment {
     APIInterface apiInterface;
     RecyclerView recyclerPrice, recyclerGenre, recyclerLatest ;
     List<Book> bookList= new ArrayList<>();
+    LinearProgressIndicator progressBar;
 
 
     @Nullable
@@ -66,39 +69,27 @@ public class HomeFragment extends Fragment {
         recyclerPrice = view.findViewById(R.id.recycler_price);
         recyclerGenre = view.findViewById(R.id.recycler_genre);
         recyclerLatest = view.findViewById(R.id.recycler_latest);
-
+        progressBar =view.findViewById(R.id.progress_bar);
 
         apiInterface = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
 
-     //   getUserDetails();
-        getLatestBooks();
-
-
-
+       getLatestBooks();
 
         //home recyclerview - using same adapter
-
-        recyclerLatest.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
-        recyclerLatest.setAdapter(new LatestBooksAdapter(getContext()));
-         // recyclerLatest.setNestedScrollingEnabled(false);
-         //  recyclerLatest.hasFixedSize();
 
         recyclerPrice.setLayoutManager(new GridLayoutManager(getContext(),2));
         recyclerPrice.setAdapter(new AdapterRecycleView(getContext(), R.layout.recycler_price_layout, new AdapterRecycleView.ItemClickListener() {
             @Override
             public void onPriceClick(int position) {
 
-                Intent intent = new Intent(getContext(), BookActivity.class);
+                Intent intent = new Intent(getContext(), BookList.class);
+                intent.putExtra("queryValue","100");
+                intent.putExtra("queryType","price");
                 startActivity(intent);
             }
 
             @Override
             public void onGenreClick(int position) {
-
-            }
-
-            @Override
-            public void onLanguageClick(int position) {
 
             }
         }));
@@ -113,11 +104,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void onGenreClick(int position) {
 
-            }
-
-            @Override
-            public void onLanguageClick(int position) {
-
+                Intent intent = new Intent(getContext(), BookList.class);
+                intent.putExtra("queryValue","4");
+                intent.putExtra("queryType","category");
+                startActivity(intent);
             }
         }));
 
@@ -132,10 +122,26 @@ public class HomeFragment extends Fragment {
         call.enqueue(new Callback<List<Book>>() {
             @Override
             public void onResponse(Call<List<Book>> call, Response<List<Book>> response) {
-                Toast.makeText(getContext(), "Successful", Toast.LENGTH_SHORT).show();
+
                 System.out.println("onResponse");
                 bookList = response.body();
-                System.out.println(response.body().get(0).getBookName());
+             //   System.out.println(response.body().get(0).getBookName());
+                if (response.isSuccessful()){
+                    progressBar.setVisibility(View.GONE);
+                }
+
+                recyclerLatest.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+                LatestBooksAdapter latestBooksAdapter = new LatestBooksAdapter(getContext(), bookList, new LatestBooksAdapter.ClickListener() {
+                    @Override
+                    public void onItemClickListener(int position) {
+
+                        Intent intent = new Intent(getContext(),BookActivity.class);
+                        intent.putExtra("book_id",bookList.get(position).getBookId());
+                        intent.putExtra("seller_name",bookList.get(position).getBookSellerName());
+                        startActivity(intent);
+                    }
+                });
+                recyclerLatest.setAdapter(latestBooksAdapter);
             }
 
             @Override
@@ -150,42 +156,7 @@ public class HomeFragment extends Fragment {
 
     }
 
-    private void getUserDetails() {
 
-        Call<User> call = apiInterface.getUser("0");
-
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-
-                if (response.isSuccessful()) {
-                    // Do your success stuff...
-                    if (getContext()!= null) {
-
-                    }
-
-                } else {
-                    Toast.makeText(getContext(), String.valueOf(response.code()), Toast.LENGTH_SHORT).show();
-
-                }
-                //Log.w("Full json res => ",new Gson().toJson(response));
-                System.out.println("onResponse");
-                System.out.println(response.body().toString());
-
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-
-                String message = t.getMessage();
-                Log.d("failure12", t.toString());
-                System.out.println("onFailure");
-                System.out.println(t.fillInStackTrace());
-            }
-
-        });
-
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

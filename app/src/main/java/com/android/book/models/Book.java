@@ -10,6 +10,12 @@ public  class Book  {
     @SerializedName("book_id")
     @Expose
     private String bookId;
+    @SerializedName("user_id")
+    @Expose
+    private String userId;
+    @SerializedName("book_thumbnail")
+    @Expose
+    private String bookThumbnail;
     @SerializedName("book_name")
     @Expose
     private String bookName;
@@ -25,10 +31,37 @@ public  class Book  {
     @SerializedName("book_category")
     @Expose
     private String bookCategory;
-    @SerializedName("book_description")
+    @SerializedName("book_details")
     @Expose
     private String bookDescription;
+    @SerializedName("user_name")
+    @Expose
+    private String bookSellerName;
 
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getBookSellerName() {
+        return bookSellerName;
+    }
+
+    public void setBookSellerName(String bookSellerName) {
+        this.bookSellerName = bookSellerName;
+    }
+
+    public String getBookThumbnail() {
+        return bookThumbnail;
+    }
+
+    public void setBookThumbnail(String bookThumbnail) {
+        this.bookThumbnail = bookThumbnail;
+    }
 
     public String getBookId() {
         return bookId;

@@ -5,30 +5,30 @@ import com.google.gson.annotations.SerializedName;
 
 public  class User {
 
-    @SerializedName("user")
+    @SerializedName("user_name")
     @Expose
     private String userName;
-    @SerializedName("user_password")
+    @SerializedName("user_firebase_id")
     @Expose
-    private String userPassword;
+    private String firebaseId;
     @SerializedName("user_email")
     @Expose
     private String userEmail;
+
+    public String getFirebaseId() {
+        return firebaseId;
+    }
+
+    public void setFirebaseId(String firebaseId) {
+        this.firebaseId = firebaseId;
+    }
 
     public String getUserName() {
         return userName;
     }
 
-    public void setUserName(String userName) {
+    public void setUserPassword(String userName) {
         this.userName = userName;
-    }
-
-    public String getUserPassword() {
-        return userPassword;
-    }
-
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
     }
 
     public String getUserEmail() {

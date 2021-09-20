@@ -13,6 +13,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -46,8 +47,19 @@ public  interface APIInterface {
     Call<List<Book>> getLatestBooks(@Field("token")String Token) ;
 
     @FormUrlEncoded
+    @POST("/api/get_book_list_sort.php")
+    Call<List<Book>> getLatestBooksSort(@Field("query_value")String queryValue) ;
+
+    @FormUrlEncoded
     @POST("/api/get_book_details.php")
     Call<Book> getBookDetails(@Field("book_id")String bookID) ;
+
+    @FormUrlEncoded
+    @POST("/api/add_user_details.php")
+    Call<Book> addUserDetails(@Field("user_firebase_id")String firebaseId,
+                              @Field( "user_name")String userName,
+                              @Field( "user_email")String userEmail) ;
+
 
 }
 

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,7 +23,7 @@ public class AdapterRecycleView extends RecyclerView.Adapter <AdapterRecycleView
 
         void onPriceClick(int position);
         void onGenreClick(int position);
-        void onLanguageClick(int position);
+
 
     }
 
@@ -69,6 +70,12 @@ public class AdapterRecycleView extends RecyclerView.Adapter <AdapterRecycleView
         }else if (layout==R.layout.recycler_genre_layout) {
             holder.GenreTitleView.setText(genreTitle[position]);
             holder.genre_image_view.setImageResource(genreImage[position]);
+            holder.genreParentLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    itemClickListener.onGenreClick(position);
+                }
+            });
         }
 
 
@@ -84,6 +91,7 @@ public class AdapterRecycleView extends RecyclerView.Adapter <AdapterRecycleView
 
         TextView priceView, GenreTitleView;
         ImageView genre_image_view;
+        LinearLayout priceParenLayout, genreParentLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -91,13 +99,14 @@ public class AdapterRecycleView extends RecyclerView.Adapter <AdapterRecycleView
             priceView = itemView.findViewById(R.id.price_title);
             GenreTitleView = itemView.findViewById(R.id.genre_title);
             genre_image_view = itemView.findViewById(R.id.genre_image_view);
-
+            priceParenLayout = itemView.findViewById(R.id.price_parent_layout);
+            genreParentLayout = itemView.findViewById(R.id.genre_parent_layout);
 
         }
 
         public void bind(int position, ItemClickListener itemClickListener) {
 
-            priceView.setOnClickListener(new View.OnClickListener() {
+            priceParenLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 

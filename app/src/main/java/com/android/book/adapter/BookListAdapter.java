@@ -17,28 +17,21 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
-public class LatestBooksAdapter extends RecyclerView.Adapter<LatestBooksAdapter.MyViewHolder> {
+public  class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyViewHolder> {
 
     Context context;
+
     List<Book> bookList;
-    ClickListener clickListener;
 
-    public interface ClickListener {
-       void onItemClickListener(int position);
-    }
-
-
-    public LatestBooksAdapter(Context context, List<Book> bookList, ClickListener clickListener) {
+    public BookListAdapter(Context context, List<Book> bookList) {
         this.context = context;
-        this.bookList=bookList;
-        this.clickListener=clickListener;
+        this.bookList = bookList;
     }
-
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.recycler_latest_book_layout,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.recycler_book_list,parent,false);
         return new MyViewHolder(view);
     }
 
@@ -47,16 +40,9 @@ public class LatestBooksAdapter extends RecyclerView.Adapter<LatestBooksAdapter.
 
         holder.book_title_view.setText(bookList.get(position).getBookName());
         holder.price_view.setText("₹"+bookList.get(position).getBookPrice());
-        holder.publisher_view.setText("Author: "+bookList.get(position).getBookAuthor());
+        holder.publisher_view.setText("Publisher: "+bookList.get(position).getBookAuthor());
         Glide.with(context).load(bookList.get(position).getBookThumbnail()).into(holder.thumbnail);
         holder.seller_name_view.setText("Seller: "+bookList.get(position).getBookSellerName());
-
-        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                clickListener.onItemClickListener(position);
-            }
-        });
 
     }
 
@@ -65,7 +51,7 @@ public class LatestBooksAdapter extends RecyclerView.Adapter<LatestBooksAdapter.
         return bookList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView book_title_view, publisher_view, price_view, seller_name_view ;
         LinearLayout parentLayout;
@@ -81,5 +67,9 @@ public class LatestBooksAdapter extends RecyclerView.Adapter<LatestBooksAdapter.
             price_view = itemView.findViewById(R.id.book_price);
             thumbnail = itemView.findViewById(R.id.book_thumbnail);
         }
+    }
+
+    public void setBookList(List<Book> bookList) {
+        this.bookList = bookList;
     }
 }

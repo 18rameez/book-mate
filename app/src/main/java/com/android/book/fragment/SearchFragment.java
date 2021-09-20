@@ -38,10 +38,7 @@ public class SearchFragment extends Fragment {
             public void onGenreClick(int position) {
 
             }
-            @Override
-            public void onLanguageClick(int position) {
 
-            }
         }));
 
         return view ;

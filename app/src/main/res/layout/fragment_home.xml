@@ -27,12 +27,6 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
-   <!-- <View
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:background="#eeeeee"/>-->
 
     <TextView
         android:layout_width="match_parent"
@@ -66,6 +60,15 @@
         android:layout_marginBottom="5dp"
         android:text="Latest Arrival"
         />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:indicatorColor="@color/green_700"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_latest"
