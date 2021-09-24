@@ -17,6 +17,7 @@ import com.android.book.models.Book;
 import com.android.book.models.User;
 import com.android.book.utils.APIInterface;
 import com.android.book.utils.RetrofitClientInstance;
+import com.google.firebase.auth.FirebaseAuth;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -64,8 +65,9 @@ public class BookActivity extends AppCompatActivity {
         sharedPreferences = getApplicationContext().getSharedPreferences("myPref", Context.MODE_PRIVATE);
         editor= sharedPreferences.edit();
 
-        firebaseId = sharedPreferences.getString("firebaseId","");
-
+      //  firebaseId = sharedPreferences.getString("firebaseId","");
+         firebaseId = FirebaseAuth.getInstance().getUid();
+        Toast.makeText(this, firebaseId, Toast.LENGTH_SHORT).show();
 
         bookId=getIntent().getStringExtra("book_id");
         bookSellerName=getIntent().getStringExtra("seller_name");

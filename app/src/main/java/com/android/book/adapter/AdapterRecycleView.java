@@ -12,24 +12,24 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.book.R;
+import com.android.book.models.Category;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 public class AdapterRecycleView extends RecyclerView.Adapter <AdapterRecycleView.ViewHolder> {
 
     ItemClickListener itemClickListener;
     public interface ItemClickListener{
 
-        void onPriceClick(int position);
-        void onGenreClick(int position);
+        void onPriceClick(String value);
+        void onGenreClick(String value);
 
 
     }
 
-
     String [] genreTitle = {"Crime and Thriller", "History", "Romance", "Personal Development"};
-    String [] priceCategory = {"Under ₹49","Under ₹99","Under ₹149","Under ₹199"};
+    String [] genreTitleId = {"9", "3", "2", "8" };
+    String [] priceCategory = {"49","99","149","199"};
     int[] genreImage = {
             R.drawable.crime_thriller,
             R.drawable.history_book,
@@ -65,7 +65,7 @@ public class AdapterRecycleView extends RecyclerView.Adapter <AdapterRecycleView
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         if (layout==R.layout.recycler_price_layout){
-            holder.priceView.setText(priceCategory[position]);
+            holder.priceView.setText("Under ₹"+priceCategory[position]);
             holder.bind(position,itemClickListener);
         }else if (layout==R.layout.recycler_genre_layout) {
             holder.GenreTitleView.setText(genreTitle[position]);
@@ -73,7 +73,7 @@ public class AdapterRecycleView extends RecyclerView.Adapter <AdapterRecycleView
             holder.genreParentLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    itemClickListener.onGenreClick(position);
+                    itemClickListener.onGenreClick(genreTitleId[position]);
                 }
             });
         }
@@ -110,11 +110,14 @@ public class AdapterRecycleView extends RecyclerView.Adapter <AdapterRecycleView
                 @Override
                 public void onClick(View view) {
 
-                    itemClickListener.onPriceClick(position);
+                    itemClickListener.onPriceClick(priceCategory[position]);
                 }
             });
 
             
         }
     }
+
+
+
 }

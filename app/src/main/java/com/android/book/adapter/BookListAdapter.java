@@ -23,10 +23,18 @@ public  class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyVie
 
     List<Book> bookList;
 
-    public BookListAdapter(Context context, List<Book> bookList) {
+    public BookListAdapter(Context context, List<Book> bookList, OnClickListener onClickListener) {
         this.context = context;
         this.bookList = bookList;
+        this.onClickListener = onClickListener;
     }
+
+    OnClickListener onClickListener;
+    public interface  OnClickListener {
+
+        void onClick(int position);
+    }
+
 
     @NonNull
     @Override
@@ -43,6 +51,13 @@ public  class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyVie
         holder.publisher_view.setText("Publisher: "+bookList.get(position).getBookAuthor());
         Glide.with(context).load(bookList.get(position).getBookThumbnail()).into(holder.thumbnail);
         holder.seller_name_view.setText("Seller: "+bookList.get(position).getBookSellerName());
+
+        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClickListener.onClick(position);
+            }
+        });
 
     }
 

@@ -1,13 +1,11 @@
 package com.android.book.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,27 +21,11 @@ import com.android.book.R;
 import com.android.book.adapter.AdapterRecycleView;
 import com.android.book.adapter.LatestBooksAdapter;
 import com.android.book.models.Book;
-import com.android.book.models.User;
-import com.android.book.utils.APIError;
 import com.android.book.utils.APIInterface;
 import com.android.book.utils.RetrofitClientInstance;
-import com.google.android.gms.common.internal.service.Common;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.squareup.okhttp.ResponseBody;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -80,16 +62,16 @@ public class HomeFragment extends Fragment {
         recyclerPrice.setLayoutManager(new GridLayoutManager(getContext(),2));
         recyclerPrice.setAdapter(new AdapterRecycleView(getContext(), R.layout.recycler_price_layout, new AdapterRecycleView.ItemClickListener() {
             @Override
-            public void onPriceClick(int position) {
+            public void onPriceClick(String value) {
 
                 Intent intent = new Intent(getContext(), BookList.class);
-                intent.putExtra("queryValue","100");
+                intent.putExtra("queryValue",value);
                 intent.putExtra("queryType","price");
                 startActivity(intent);
             }
 
             @Override
-            public void onGenreClick(int position) {
+            public void onGenreClick(String position) {
 
             }
         }));
@@ -97,15 +79,15 @@ public class HomeFragment extends Fragment {
         recyclerGenre.setLayoutManager(new GridLayoutManager(getContext(),2));
         recyclerGenre.setAdapter(new AdapterRecycleView(getContext(), R.layout.recycler_genre_layout, new AdapterRecycleView.ItemClickListener() {
             @Override
-            public void onPriceClick(int position) {
+            public void onPriceClick(String position) {
 
             }
 
             @Override
-            public void onGenreClick(int position) {
+            public void onGenreClick(String value) {
 
                 Intent intent = new Intent(getContext(), BookList.class);
-                intent.putExtra("queryValue","4");
+                intent.putExtra("queryValue",value);
                 intent.putExtra("queryType","category");
                 startActivity(intent);
             }

@@ -6,9 +6,40 @@
     android:layout_height="match_parent"
     tools:context=".ChatScreen">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/green_700"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+        <ImageView
+            android:id="@+id/tv_header_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:src="@drawable/message_user" />
+
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:layout_marginLeft="20dp"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            android:text="User Name"/>
+
+
+
+    </androidx.appcompat.widget.Toolbar>
+
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/message_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?actionBarSize"
         android:layout_marginBottom="?actionBarSize"/>
 
     <LinearLayout
@@ -24,13 +55,16 @@
             android:layout_width="wrap_content"
             android:autoSizeMaxTextSize="10dp"
             android:padding="8dp"
+            android:background="@android:color/transparent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             />
         <ImageView
             android:id="@+id/sned_button"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:padding="5dp"
             android:src="@drawable/send_icon"/>
 
     </LinearLayout>

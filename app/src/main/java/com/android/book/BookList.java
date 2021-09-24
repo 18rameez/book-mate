@@ -48,14 +48,23 @@ public class BookList extends AppCompatActivity {
         progressBar=bookBinding.progressBar;
         apiInterface = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
 
-        getBookList();
+        if (queryType.equalsIgnoreCase("category")){
+
+            getBookList();
+
+        }else if (queryType.equalsIgnoreCase("price")){
+
+            getBookListByPrice();
+        }
+
+
     }
 
     private void getBookList() {
 
 
 
-        Call<List<Book>> call = apiInterface.getLatestBooks("empty");
+        Call<List<Book>> call = apiInterface.getBooksFilter(queryValue);
 
         call.enqueue(new Callback<List<Book>>() {
             @Override
@@ -66,7 +75,58 @@ public class BookList extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
 
                 recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false));
-                BookListAdapter bookListAdapter = new BookListAdapter(getApplicationContext(),bookList);
+                BookListAdapter bookListAdapter = new BookListAdapter(getApplicationContext(), bookList, new BookListAdapter.OnClickListener() {
+                    @Override
+                    public void onClick(int position) {
+
+                        Intent intent = new Intent(getApplicationContext(),BookActivity.class);
+                        intent.putExtra("book_id",bookList.get(position).getBookId());
+                        intent.putExtra("seller_name",bookList.get(position).getBookSellerName());
+                        startActivity(intent);
+                    }
+                });
+                recyclerView.setAdapter(bookListAdapter);
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Book>> call, Throwable t) {
+
+                String message = t.getMessage();
+                Log.d("failure12", message);
+                System.out.println("onFailure");
+                System.out.println(t.fillInStackTrace());
+            }
+        });
+
+    }
+
+    private void getBookListByPrice() {
+
+
+
+        Call<List<Book>> call = apiInterface.getBooksByPrice(queryValue);
+
+        call.enqueue(new Callback<List<Book>>() {
+            @Override
+            public void onResponse(Call<List<Book>> call, Response<List<Book>> response) {
+
+                System.out.println("onResponse");
+                bookList = response.body();
+                progressBar.setVisibility(View.GONE);
+
+                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false));
+                BookListAdapter bookListAdapter = new BookListAdapter(getApplicationContext(), bookList, new BookListAdapter.OnClickListener() {
+                    @Override
+                    public void onClick(int position) {
+
+                        Intent intent = new Intent(getApplicationContext(),BookActivity.class);
+                        intent.putExtra("book_id",bookList.get(position).getBookId());
+                        intent.putExtra("seller_name",bookList.get(position).getBookSellerName());
+                        startActivity(intent);
+
+                    }
+                });
                 recyclerView.setAdapter(bookListAdapter);
 
             }

@@ -1,12 +1,14 @@
 package com.android.book.utils;
 
 import com.android.book.models.Book;
+import com.android.book.models.Category;
 import com.android.book.models.User;
 import okhttp3.RequestBody;
 
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
@@ -47,12 +49,20 @@ public  interface APIInterface {
     Call<List<Book>> getLatestBooks(@Field("token")String Token) ;
 
     @FormUrlEncoded
-    @POST("/api/get_book_list_sort.php")
-    Call<List<Book>> getLatestBooksSort(@Field("query_value")String queryValue) ;
+    @POST("/api/get_book_list_filter.php")
+    Call<List<Book>> getBooksFilter(@Field("category_id")String queryValue) ;
+
+    @FormUrlEncoded
+    @POST("/api/get_book_list_by_price.php")
+    Call<List<Book>> getBooksByPrice(@Field("book_price")String queryValue) ;
 
     @FormUrlEncoded
     @POST("/api/get_book_details.php")
     Call<Book> getBookDetails(@Field("book_id")String bookID) ;
+
+    @FormUrlEncoded
+    @POST("/api/get_all_category.php")
+    Call<List<Category>> getAllCategory(@Field("token")String Token) ;
 
     @FormUrlEncoded
     @POST("/api/add_user_details.php")

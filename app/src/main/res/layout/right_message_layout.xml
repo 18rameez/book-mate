@@ -2,13 +2,17 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_margin="3dp"
+    android:layout_margin="8dp"
     android:gravity="right"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:padding="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:gravity="right"
         android:background="@drawable/background_right_message"
         android:layout_height="wrap_content">
 
@@ -16,6 +20,8 @@
             android:id="@+id/message"
             android:layout_width="wrap_content"
             android:textColor="@color/white"
+            android:maxWidth="300dp"
+            android:textSize="16dp"
             android:text="Hi from User"
             android:layout_height="wrap_content"/>
 

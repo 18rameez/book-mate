@@ -73,6 +73,7 @@
             />
 
         <TextView
+            android:id="@+id/my_books_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableRight="@drawable/arrow_right_icon"
@@ -89,6 +90,7 @@
             />
 
         <TextView
+            android:id="@+id/edit_profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableRight="@drawable/arrow_right_icon"
@@ -105,6 +107,7 @@
             />
 
         <TextView
+            android:id="@+id/pending_books"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableRight="@drawable/arrow_right_icon"
@@ -121,6 +124,7 @@
             />
 
         <TextView
+            android:id="@+id/feedback_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableRight="@drawable/arrow_right_icon"
@@ -137,6 +141,7 @@
             />
 
         <TextView
+            android:id="@+id/wish_list_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableRight="@drawable/arrow_right_icon"
@@ -153,6 +158,7 @@
             />
 
         <TextView
+            android:id="@+id/settings_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableRight="@drawable/arrow_right_icon"
@@ -169,6 +175,7 @@
             />
 
         <TextView
+            android:id="@+id/complaint_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableRight="@drawable/arrow_right_icon"
