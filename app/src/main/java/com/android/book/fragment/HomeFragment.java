@@ -1,11 +1,14 @@
 package com.android.book.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,6 +41,12 @@ public class HomeFragment extends Fragment {
     RecyclerView recyclerPrice, recyclerGenre, recyclerLatest ;
     List<Book> bookList= new ArrayList<>();
     LinearProgressIndicator progressBar;
+    String userId = "1" ;
+
+
+    SharedPreferences sharedPreferences ;
+    SharedPreferences.Editor editor ;
+
 
 
     @Nullable
@@ -54,6 +63,11 @@ public class HomeFragment extends Fragment {
         progressBar =view.findViewById(R.id.progress_bar);
 
         apiInterface = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
+
+        sharedPreferences = getContext().getSharedPreferences("myPref",Context.MODE_PRIVATE);
+        editor= sharedPreferences.edit();
+        userId = sharedPreferences.getString("user_id","");
+        Log.v("user_id",userId);
 
        getLatestBooks();
 
@@ -99,7 +113,7 @@ public class HomeFragment extends Fragment {
 
     private void getLatestBooks() {
 
-        Call<List<Book>> call = apiInterface.getLatestBooks("empty");
+        Call<List<Book>> call = apiInterface.getLatestBooks(userId);
 
         call.enqueue(new Callback<List<Book>>() {
             @Override
@@ -112,18 +126,27 @@ public class HomeFragment extends Fragment {
                     progressBar.setVisibility(View.GONE);
                 }
 
-                recyclerLatest.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
-                LatestBooksAdapter latestBooksAdapter = new LatestBooksAdapter(getContext(), bookList, new LatestBooksAdapter.ClickListener() {
-                    @Override
-                    public void onItemClickListener(int position) {
+                if(bookList != null){
 
-                        Intent intent = new Intent(getContext(),BookActivity.class);
-                        intent.putExtra("book_id",bookList.get(position).getBookId());
-                        intent.putExtra("seller_name",bookList.get(position).getBookSellerName());
-                        startActivity(intent);
-                    }
-                });
-                recyclerLatest.setAdapter(latestBooksAdapter);
+                    recyclerLatest.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+                    LatestBooksAdapter latestBooksAdapter = new LatestBooksAdapter(getContext(), bookList, new LatestBooksAdapter.ClickListener() {
+                        @Override
+                        public void onItemClickListener(int position) {
+
+                            Intent intent = new Intent(getContext(),BookActivity.class);
+                            intent.putExtra("book_id",bookList.get(position).getBookId());
+                            intent.putExtra("seller_name",bookList.get(position).getBookSellerName());
+                            startActivity(intent);
+                        }
+                    });
+                    recyclerLatest.setAdapter(latestBooksAdapter);
+
+                }else {
+
+                    Toast.makeText(getContext(), "Server is down, try again", Toast.LENGTH_SHORT).show();
+                }
+
+
             }
 
             @Override

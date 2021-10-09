@@ -112,7 +112,7 @@
             android:layout_height="wrap_content"
             app:boxStrokeWidth="0dp"
             app:boxStrokeWidthFocused="0dp"
-            android:hint="Book Name">
+            android:hint="Book Details">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/book_description"

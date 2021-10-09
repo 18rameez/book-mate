@@ -7,7 +7,9 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +31,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     Fragment fragment;
     FragmentTransaction transaction;
     Toolbar toolbar;
+    String userId = "1" ;
+    SharedPreferences sharedPreferences ;
+    SharedPreferences.Editor editor ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +53,16 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         window.setStatusBarColor(ContextCompat.getColor(this,R.color.green_700));
 
 
+        sharedPreferences = getApplicationContext().getSharedPreferences("myPref", Context.MODE_PRIVATE);
+        editor= sharedPreferences.edit();
+        userId = sharedPreferences.getString("user_id","");
+
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         fragment    =   new HomeFragment();
         transaction =   getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.container, fragment);
         transaction.commit();
+
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
 
@@ -92,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
 
         int id = item.getItemId();
-        fragment=null;
+       fragment=null;
 
         if (id == R.id.navigation_home){
             fragment = new HomeFragment();

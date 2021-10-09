@@ -33,7 +33,7 @@ public class BookActivity extends AppCompatActivity {
 
     SharedPreferences sharedPreferences ;
     SharedPreferences.Editor editor ;
-    String firebaseId;
+    String firebaseId, userId;
     User user;
     Book book;
 
@@ -64,10 +64,11 @@ public class BookActivity extends AppCompatActivity {
 
         sharedPreferences = getApplicationContext().getSharedPreferences("myPref", Context.MODE_PRIVATE);
         editor= sharedPreferences.edit();
+        userId = sharedPreferences.getString("user_id","");
 
       //  firebaseId = sharedPreferences.getString("firebaseId","");
          firebaseId = FirebaseAuth.getInstance().getUid();
-        Toast.makeText(this, firebaseId, Toast.LENGTH_SHORT).show();
+
 
         bookId=getIntent().getStringExtra("book_id");
         bookSellerName=getIntent().getStringExtra("seller_name");
@@ -84,11 +85,18 @@ public class BookActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Book> call, Response<Book> response) {
 
-
-                System.out.println("onResponse");
                 book = response.body();
-                setBookDetails(book);
-                getUserDetails();
+                if (book != null){
+
+                    System.out.println("onResponse");
+                    setBookDetails(book);
+                    getUserDetails();
+                }else {
+
+                    Toast.makeText(BookActivity.this, "It may take some time to process", Toast.LENGTH_SHORT).show();
+                }
+
+
 
             }
 
@@ -131,15 +139,12 @@ public class BookActivity extends AppCompatActivity {
 
                 }
                 System.out.println("onResponse");
-                System.out.println(response.body().toString());
-
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
 
                 String message = t.getMessage();
-                Log.d("failure12", t.toString());
                 System.out.println("onFailure");
                 System.out.println(t.fillInStackTrace());
             }

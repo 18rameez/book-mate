@@ -9,11 +9,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.FileUtils;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -32,8 +35,12 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -51,6 +58,9 @@ public class AddBook extends AppCompatActivity {
     private static final int PICK_IMAGE = 18;
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
     APIInterface apiInterface;
+    SharedPreferences sharedPreferences ;
+    SharedPreferences.Editor editor ;
+
 
     TextInputEditText etBookName, etBookPrice, etBookAuthor, etBookLanguage, etBookDescription, etBookCategory;
     RecyclerView recycSelectedImage;
@@ -59,7 +69,8 @@ public class AddBook extends AppCompatActivity {
     ArrayList<Uri> selectedImageUri =  new ArrayList<Uri>();
     List<MultipartBody.Part> parts = new ArrayList<>();
 
-    RequestBody bookName, bookPrice, bookAuthor, bookLanguage, bookCategory, bookDescription;
+    RequestBody bookName, bookPrice, bookAuthor, bookLanguage, bookCategory, bookDescription, bookAddedDate, userIdRequestBody;
+    String publishDate, userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,30 +89,31 @@ public class AddBook extends AppCompatActivity {
         recycSelectedImage = findViewById(R.id.recycler_view_image);
 
 
+        sharedPreferences = getApplicationContext().getSharedPreferences("myPref", Context.MODE_PRIVATE);
+        editor= sharedPreferences.edit();
+        userId = sharedPreferences.getString("user_id","");
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                 bookName = createPartFromString(etBookName.getText().toString());
+                bookName = createPartFromString(etBookName.getText().toString());
                 bookPrice = createPartFromString(etBookPrice.getText().toString());
                 bookAuthor = createPartFromString(etBookAuthor.getText().toString());
                 bookLanguage = createPartFromString(etBookLanguage.getText().toString());
                 bookCategory = createPartFromString(etBookCategory.getText().toString());
                 bookDescription = createPartFromString(etBookDescription.getText().toString());
+                bookAddedDate  = createPartFromString(publishDate);
+                userIdRequestBody  = createPartFromString(userId);
 
                 for (int i=0; i < selectedImageUri.size(); i++){
                     Log.v("times_run"," "+ i);
                     parts.add(prepareFilePart("book_images[]",selectedImageUri.get(i)));
                 }
 
-             //   sendBookRequest(bookName,bookPrice,bookAuthor,bookLanguage,bookCategory,bookDescription,parts);
+                sendBookRequest(bookName,bookPrice,bookAuthor,bookLanguage,bookCategory,bookDescription,parts);
 
-                try {
-                    sendTest(selectedImageUri.get(0));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+
             }
         });
 
@@ -116,6 +128,15 @@ public class AddBook extends AppCompatActivity {
 
             }
         });
+
+
+        Date c = Calendar.getInstance().getTime();
+        System.out.println("Current time => " + c);
+
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+        publishDate = df.format(c);
+
+
 
     }
 
@@ -232,26 +253,41 @@ public class AddBook extends AppCompatActivity {
     private void sendBookRequest(RequestBody bookName, RequestBody bookPrice, RequestBody bookAuthor, RequestBody bookLanguage, RequestBody bookCategory, RequestBody bookDescription, List<MultipartBody.Part> parts) {
 
      apiInterface = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-//      Call<ResponseBody> addBooks = apiInterface.addBook(bookName,bookPrice,bookAuthor,bookLanguage,bookCategory,bookDescription, parts);
-//
-//      addBooks.enqueue(new Callback<ResponseBody>() {
-//          @Override
-//          public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//
-//              System.out.println("onResponse");
-//              System.out.println(response.body().toString());
-//              Toast.makeText(getApplicationContext(), String.valueOf(response.code()), Toast.LENGTH_SHORT).show();
-//          }
-//
-//          @Override
-//          public void onFailure(Call<ResponseBody> call, Throwable t) {
-//
-//              String message = t.getMessage();
-//              Log.d("failure12", "rammi"+message);
-//              System.out.println("onFailure");
-//              System.out.println(t.fillInStackTrace());
-//          }
-//      });
+      Call<ResponseBody> addBook = apiInterface.addBookWithoutImage(bookName,bookPrice,userIdRequestBody,bookAuthor,bookLanguage,bookDescription,bookAddedDate,bookCategory);
+
+      addBook.enqueue(new Callback<ResponseBody>() {
+          @Override
+          public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+              System.out.println("onResponse");
+              if(response.isSuccessful()){
+
+                  etBookName.setText("");
+                  etBookPrice.setText("");
+                  etBookAuthor.setText("");
+                  etBookLanguage.setText("");
+                  etBookDescription.setText("");
+                  etBookCategory.setText("");
+
+                  Toast.makeText(AddBook.this, "Your book has been added...", Toast.LENGTH_SHORT).show();
+
+
+              }else {
+
+                  Toast.makeText(AddBook.this, "Something went wrong, try again", Toast.LENGTH_SHORT).show();
+              }
+
+          }
+
+          @Override
+          public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+              String message = t.getMessage();
+              Log.d("failure12", message);
+              System.out.println("onFailure");
+              System.out.println(t.fillInStackTrace());
+          }
+      });
 
 
     }

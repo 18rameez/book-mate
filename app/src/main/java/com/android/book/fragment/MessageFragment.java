@@ -15,10 +15,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.book.ChatScreen;
+import com.android.book.MainActivity;
 import com.android.book.R;
 import com.android.book.adapter.MessageListAdapter;
 import com.android.book.models.FirebaseUserModel;
 import com.android.book.models.Message;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,6 +40,7 @@ public class MessageFragment extends Fragment {
     List<FirebaseUserModel> users;
     DatabaseReference databaseReference;
     String currentUserFirebaseId;
+    CircularProgressIndicator progressBar;
 
     int loopCount= 0;
 
@@ -46,9 +49,11 @@ public class MessageFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_message, container, false);
 
+        ((MainActivity)getActivity()).changeActionBar("Messages");
+
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        progressBar = view.findViewById(R.id.progress_bar);
 
         userList = new ArrayList<>();
         currentUserFirebaseId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -98,6 +103,7 @@ public class MessageFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
+                progressBar.setVisibility(View.GONE);
                 loopCount++;
                users.clear();
                 ListIterator<FirebaseUserModel> listIteratorUser;

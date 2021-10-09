@@ -7,11 +7,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.book.resposne_model.InsertResponse;
+import com.android.book.utils.APIInterface;
+import com.android.book.utils.RetrofitClientInstance;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -20,8 +24,17 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
+import okhttp3.ResponseBody;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.HashMap;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -33,6 +46,8 @@ public class SignUpActivity extends AppCompatActivity {
 
     SharedPreferences sharedPreferences ;
     SharedPreferences.Editor editor ;
+    APIInterface apiInterface;
+    String userFirebaseId, user_id_from_database;
 
 
     @Override
@@ -41,10 +56,12 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         auth = FirebaseAuth.getInstance();
+
+
         sharedPreferences = getApplicationContext().getSharedPreferences("myPref", Context.MODE_PRIVATE);
         editor= sharedPreferences.edit();
 
-
+        apiInterface = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
 
         edt_name = findViewById(R.id.edt_name);
         edt_email = findViewById(R.id.edt_email);
@@ -73,12 +90,12 @@ public class SignUpActivity extends AppCompatActivity {
 
                           if (task.isSuccessful()){
 
-                              Toast.makeText(SignUpActivity.this, "success", Toast.LENGTH_SHORT).show();
 
+                             Toast.makeText(SignUpActivity.this, "Account has been created successfully", Toast.LENGTH_SHORT).show();
                               FirebaseUser firebaseUser = auth.getCurrentUser();
-                              String userId =  firebaseUser.getUid();
+                              userFirebaseId =  firebaseUser.getUid();
 
-                              reference = FirebaseDatabase.getInstance().getReference("Users").child(userId);
+                              reference = FirebaseDatabase.getInstance().getReference("Users").child(userFirebaseId);
 
                               HashMap<String, String> hashMap = new HashMap<>();
                               hashMap.put("email", email);
@@ -90,8 +107,10 @@ public class SignUpActivity extends AppCompatActivity {
                                   public void onComplete(@NonNull Task<Void> task) {
                                       if (task.isSuccessful()){
 
+                                          addUserDetailsToDatabase(userName,email);
+
                                           editor.putBoolean("isLogin",true);
-                                          editor.putString("firebaseId",userId);
+                                          editor.putString("firebaseId",userFirebaseId);
                                           editor.commit();
                                           Intent intent =  new Intent(SignUpActivity.this,MainActivity.class);
                                           startActivity(intent);
@@ -106,11 +125,37 @@ public class SignUpActivity extends AppCompatActivity {
                           }else {
 
                               String errorCode = ((FirebaseAuthException) task.getException()).getErrorCode();
-                              Toast.makeText(SignUpActivity.this, "failed" + errorCode, Toast.LENGTH_SHORT).show();
+                              Toast.makeText(SignUpActivity.this, "Failed: " + errorCode, Toast.LENGTH_SHORT).show();
 
                           }
 
                       }
                   });
+    }
+
+    private void addUserDetailsToDatabase(String userName, String email) {
+
+        Call<InsertResponse> call = apiInterface.addUserDetails(userFirebaseId,userName,email);
+        call.enqueue(new Callback<InsertResponse>() {
+            @Override
+            public void onResponse(Call<InsertResponse> call, Response<InsertResponse> response) {
+
+                InsertResponse insertResponse = response.body();
+                user_id_from_database = insertResponse.getUserId();
+                editor.putString("user_id",user_id_from_database);
+                editor.commit();
+
+            }
+
+            @Override
+            public void onFailure(Call<InsertResponse> call, Throwable t) {
+
+                String message = t.getMessage();
+                Log.d("failure12", message);
+                System.out.println("onFailure");
+                System.out.println(t.fillInStackTrace());
+            }
+        });
+
     }
 }

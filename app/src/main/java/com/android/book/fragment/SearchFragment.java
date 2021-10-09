@@ -2,10 +2,14 @@ package com.android.book.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +29,7 @@ import com.android.book.models.Book;
 import com.android.book.models.Category;
 import com.android.book.utils.APIInterface;
 import com.android.book.utils.RetrofitClientInstance;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +41,14 @@ import retrofit2.Response;
 
 public class SearchFragment extends Fragment {
 
-    RecyclerView categoryRecycler ;
+    RecyclerView categoryRecycler, searchRecyclerView ;
     APIInterface apiInterface;
     List <Category> categoryList =  new ArrayList<>();
     CategoryAdapter categoryAdapter;
+    EditText edtSearch;
+    String queryValue;
+    List<Book>bookList;
+    CircularProgressIndicator progressBar;
 
     @Nullable
     @Override
@@ -47,16 +56,88 @@ public class SearchFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_search,container,false);
 
         categoryRecycler = view.findViewById(R.id.category_recycler);
+        searchRecyclerView = view.findViewById(R.id.search_recycler);
         categoryRecycler.setLayoutManager(new GridLayoutManager(getContext(),2));
         apiInterface = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
+        progressBar= view.findViewById(R.id.progress_bar);
 
         ((MainActivity)getActivity()).changeActionBar("Search");
 
+        edtSearch = view.findViewById(R.id.edt_search);
+        edtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+
+                queryValue = String.valueOf(charSequence);
+                searchBook(queryValue);
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         getAllCategory();
 
         return view ;
+    }
+
+    private void searchBook(String queryValue) {
+
+        progressBar.setVisibility(View.VISIBLE);
+
+        Call<List<Book>> call = apiInterface.searchBook(queryValue);
+
+        call.enqueue(new Callback<List<Book>>() {
+            @Override
+            public void onResponse(Call<List<Book>> call, Response<List<Book>> response) {
+
+                System.out.println("onResponse");
+                bookList = response.body();
+                progressBar.setVisibility(View.GONE);
+                categoryRecycler.setVisibility(View.GONE);
+
+                if (bookList != null){
+
+                    searchRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+                    BookListAdapter bookListAdapter = new BookListAdapter(getContext(), bookList, new BookListAdapter.OnClickListener() {
+                        @Override
+                        public void onClick(int position) {
+
+                            Intent intent = new Intent(getContext(),BookActivity.class);
+                            intent.putExtra("book_id",bookList.get(position).getBookId());
+                            intent.putExtra("seller_name",bookList.get(position).getBookSellerName());
+                            startActivity(intent);
+                        }
+                    });
+                    searchRecyclerView.setAdapter(bookListAdapter);
+                }else {
+
+                    Toast.makeText(getContext(), "server is down, try again", Toast.LENGTH_SHORT).show();
+                }
+
+
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Book>> call, Throwable t) {
+
+                String message = t.getMessage();
+                Log.d("failure12", message);
+                System.out.println("onFailure");
+                System.out.println(t.fillInStackTrace());
+            }
+        });
+
     }
 
     private void getAllCategory() {
@@ -72,19 +153,25 @@ public class SearchFragment extends Fragment {
                     categoryList = response.body();
                 //    progressBar.setVisibility(View.GONE);
 
-                    categoryAdapter = new CategoryAdapter(getContext(), categoryList, new CategoryAdapter.ItemClickListener() {
-                        @Override
-                        public void onClick(String value) {
+                    if(categoryList != null) {
 
-                            Intent intent = new Intent(getContext(), BookList.class);
-                            intent.putExtra("queryValue",value);
-                            intent.putExtra("queryType","category");
-                            startActivity(intent);
-                        }
-                    });
+                        categoryAdapter = new CategoryAdapter(getContext(), categoryList, new CategoryAdapter.ItemClickListener() {
+                            @Override
+                            public void onClick(String value) {
 
-                    categoryRecycler.setAdapter(categoryAdapter);
+                                Intent intent = new Intent(getContext(), BookList.class);
+                                intent.putExtra("queryValue", value);
+                                intent.putExtra("queryType", "category");
+                                startActivity(intent);
+                            }
+                        });
 
+                        categoryRecycler.setAdapter(categoryAdapter);
+
+                    }else {
+
+                        Toast.makeText(getContext(), "server is down, try again", Toast.LENGTH_SHORT).show();
+                    }
                 }
 
                 @Override

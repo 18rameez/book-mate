@@ -14,12 +14,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.book.models.User;
+import com.android.book.utils.APIInterface;
+import com.android.book.utils.RetrofitClientInstance;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -33,6 +40,8 @@ public class LoginActivity extends AppCompatActivity {
 
     FirebaseAuth auth;
     DatabaseReference reference;
+    APIInterface apiInterface;
+    String firebaseUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +89,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        apiInterface = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
 
     }
 
@@ -93,16 +103,46 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
 
                     FirebaseUser firebaseUser = auth.getCurrentUser();
-                    String userId =  firebaseUser.getUid();
+                    firebaseUserId =  firebaseUser.getUid();
                     editor.putBoolean("isLogin",true);
                     editor.putBoolean("firebaseId",true);
                     editor.commit();
+                    getUserDetails();
                     Intent intent =  new Intent(LoginActivity.this,MainActivity.class);
                     startActivity(intent);
                 }else {
                     Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
                 }
             }
+        });
+
+    }
+
+    private void getUserDetails() {
+
+        Call<User> call = apiInterface.getUser(firebaseUserId);
+
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+
+                if (response.isSuccessful()) {
+
+                 User user = response.body();
+                 editor.putString("user_id",user.getUserId());
+                 editor.commit();
+                }
+                System.out.println("onResponse");
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+
+                String message = t.getMessage();
+                System.out.println("onFailure");
+                System.out.println(t.fillInStackTrace());
+            }
+
         });
 
     }

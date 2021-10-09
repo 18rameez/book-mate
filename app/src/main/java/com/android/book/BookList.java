@@ -33,6 +33,7 @@ public class BookList extends AppCompatActivity {
     CircularProgressIndicator progressBar;
     List<Book>bookList;
     String queryValue, queryType;
+    String userId = "1" ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +65,7 @@ public class BookList extends AppCompatActivity {
 
 
 
-        Call<List<Book>> call = apiInterface.getBooksFilter(queryValue);
+        Call<List<Book>> call = apiInterface.getBooksFilter(queryValue,userId);
 
         call.enqueue(new Callback<List<Book>>() {
             @Override
@@ -74,18 +75,27 @@ public class BookList extends AppCompatActivity {
                 bookList = response.body();
                 progressBar.setVisibility(View.GONE);
 
-                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false));
-                BookListAdapter bookListAdapter = new BookListAdapter(getApplicationContext(), bookList, new BookListAdapter.OnClickListener() {
-                    @Override
-                    public void onClick(int position) {
+                if (bookList != null){
 
-                        Intent intent = new Intent(getApplicationContext(),BookActivity.class);
-                        intent.putExtra("book_id",bookList.get(position).getBookId());
-                        intent.putExtra("seller_name",bookList.get(position).getBookSellerName());
-                        startActivity(intent);
-                    }
-                });
-                recyclerView.setAdapter(bookListAdapter);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false));
+                    BookListAdapter bookListAdapter = new BookListAdapter(getApplicationContext(), bookList, new BookListAdapter.OnClickListener() {
+                        @Override
+                        public void onClick(int position) {
+
+                            Intent intent = new Intent(getApplicationContext(),BookActivity.class);
+                            intent.putExtra("book_id",bookList.get(position).getBookId());
+                            intent.putExtra("seller_name",bookList.get(position).getBookSellerName());
+                            startActivity(intent);
+                        }
+                    });
+                    recyclerView.setAdapter(bookListAdapter);
+
+                }else {
+
+                    Toast.makeText(getApplicationContext(), "server is down, try again", Toast.LENGTH_SHORT).show();
+                }
+
+
 
             }
 
@@ -105,7 +115,7 @@ public class BookList extends AppCompatActivity {
 
 
 
-        Call<List<Book>> call = apiInterface.getBooksByPrice(queryValue);
+        Call<List<Book>> call = apiInterface.getBooksByPrice(queryValue, userId);
 
         call.enqueue(new Callback<List<Book>>() {
             @Override
@@ -115,19 +125,27 @@ public class BookList extends AppCompatActivity {
                 bookList = response.body();
                 progressBar.setVisibility(View.GONE);
 
-                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false));
-                BookListAdapter bookListAdapter = new BookListAdapter(getApplicationContext(), bookList, new BookListAdapter.OnClickListener() {
-                    @Override
-                    public void onClick(int position) {
+                if (bookList != null){
 
-                        Intent intent = new Intent(getApplicationContext(),BookActivity.class);
-                        intent.putExtra("book_id",bookList.get(position).getBookId());
-                        intent.putExtra("seller_name",bookList.get(position).getBookSellerName());
-                        startActivity(intent);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false));
+                    BookListAdapter bookListAdapter = new BookListAdapter(getApplicationContext(), bookList, new BookListAdapter.OnClickListener() {
+                        @Override
+                        public void onClick(int position) {
 
-                    }
-                });
-                recyclerView.setAdapter(bookListAdapter);
+                            Intent intent = new Intent(getApplicationContext(),BookActivity.class);
+                            intent.putExtra("book_id",bookList.get(position).getBookId());
+                            intent.putExtra("seller_name",bookList.get(position).getBookSellerName());
+                            startActivity(intent);
+
+                        }
+                    });
+                    recyclerView.setAdapter(bookListAdapter);
+                }else {
+
+                    Toast.makeText(getApplicationContext(), "server is down, try again", Toast.LENGTH_SHORT).show();
+                }
+
+
 
             }
 
