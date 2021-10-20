@@ -67,7 +67,7 @@ public class ChatScreen extends AppCompatActivity {
 
 
         receiverFirebaseId = getIntent().getStringExtra("firebaseId");
-       // Toast.makeText(this, receiverFirebaseId, Toast.LENGTH_SHORT).show();
+        Log.v("user-firebase",receiverFirebaseId);
 
 
         toolbar = findViewById(R.id.toolbar);

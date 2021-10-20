@@ -12,6 +12,7 @@
         android:orientation="vertical">
 
         <EditText
+            android:id="@+id/edt_feedback"
             android:layout_width="match_parent"
             android:padding="5dp"
             android:gravity="start"
@@ -20,9 +21,21 @@
             android:hint="Type Here"/>
 
         <Button
+            android:id="@+id/send_feedback"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Send Feedback"/>
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:indeterminate="true"
+            app:indicatorColor="@color/green_700"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center"
+          />
 
     </LinearLayout>
 

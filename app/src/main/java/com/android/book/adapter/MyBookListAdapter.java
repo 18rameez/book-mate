@@ -17,28 +17,30 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
-public  class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyViewHolder> {
+public class MyBookListAdapter extends RecyclerView.Adapter<MyBookListAdapter.MyViewHolder> {
+
+
+    public interface ItemClickListener{
+
+        void onClickItem(int position);
+    }
+
 
     Context context;
     List<Book> bookList;
+    ItemClickListener itemClickListener;
 
-    public BookListAdapter(Context context, List<Book> bookList, OnClickListener onClickListener) {
+    public MyBookListAdapter(Context context, List<Book> bookList, ItemClickListener itemClickListener) {
         this.context = context;
         this.bookList = bookList;
-        this.onClickListener = onClickListener;
+        this.itemClickListener=itemClickListener;
     }
-
-    OnClickListener onClickListener;
-    public interface  OnClickListener {
-
-        void onClick(int position);
-    }
-
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.recycler_book_list,parent,false);
+
+        View view = LayoutInflater.from(context).inflate(R.layout.recycler_my_book_list,parent,false);
         return new MyViewHolder(view);
     }
 
@@ -51,13 +53,13 @@ public  class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyVie
         Glide.with(context).load(bookList.get(position).getBookThumbnail()).into(holder.thumbnail);
         holder.seller_name_view.setText("Seller: "+bookList.get(position).getBookSellerName());
 
-        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
+        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onClickListener.onClick(position);
+
+                itemClickListener.onClickItem(position);
             }
         });
-
     }
 
     @Override
@@ -65,11 +67,12 @@ public  class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyVie
         return bookList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView book_title_view, publisher_view, price_view, seller_name_view ;
         LinearLayout parentLayout;
         ImageView thumbnail;
+        TextView deleteButton;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -79,11 +82,8 @@ public  class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.MyVie
             publisher_view = itemView.findViewById(R.id.book_publisher);
             seller_name_view = itemView.findViewById(R.id.seller_name);
             price_view = itemView.findViewById(R.id.book_price);
+            deleteButton = itemView.findViewById(R.id.delete_button);
             thumbnail = itemView.findViewById(R.id.book_thumbnail);
         }
-    }
-
-    public void setBookList(List<Book> bookList) {
-        this.bookList = bookList;
     }
 }

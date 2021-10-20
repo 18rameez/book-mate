@@ -38,6 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#EFEFEF"
+            android:inputType="textEmailAddress"
             android:drawableLeft="@drawable/email_icon"
             android:drawablePadding="5dp"
             android:hint="Email"
@@ -55,6 +56,7 @@
             android:padding="10dp" />
 
         <TextView
+            android:id="@+id/btn_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"

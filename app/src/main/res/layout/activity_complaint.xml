@@ -12,6 +12,7 @@
         android:orientation="vertical">
 
         <EditText
+            android:id="@+id/edt_complaint"
             android:layout_width="match_parent"
             android:padding="5dp"
             android:gravity="start"
@@ -20,9 +21,22 @@
             android:hint="Type Here"/>
 
         <Button
+            android:id="@+id/send_complaint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Send Complaint"/>
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:indicatorColor="@color/green_700"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center"
+            />
+
 
     </LinearLayout>
 

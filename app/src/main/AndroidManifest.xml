@@ -15,10 +15,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
-        <activity android:name=".MyBooksActivity"></activity>
-        <activity android:name=".ChatScreen"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            />
+        <activity android:name=".ForgotPassword"></activity>
+        <activity android:name=".MyBookList" />
+        <activity
+            android:name=".ChatScreen"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".BookList" />
         <activity android:name=".ComplaintActivity" />
         <activity android:name=".FeedbackActivity" />

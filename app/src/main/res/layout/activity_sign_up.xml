@@ -48,6 +48,7 @@
         android:layout_height="wrap_content"
         android:background="#EFEFEF"
         android:layout_marginTop="3dp"
+        android:inputType="textEmailAddress"
         android:drawableLeft="@drawable/email_icon"
         android:drawablePadding="5dp"
         android:hint="Email"

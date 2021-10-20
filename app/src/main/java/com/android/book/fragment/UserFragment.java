@@ -17,7 +17,7 @@ import com.android.book.ComplaintActivity;
 import com.android.book.FeedbackActivity;
 import com.android.book.LoginActivity;
 import com.android.book.MainActivity;
-import com.android.book.MyBooksActivity;
+import com.android.book.MyBookList;
 import com.android.book.R;
 
 public class UserFragment extends Fragment {
@@ -77,7 +77,7 @@ public class UserFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(getContext(), MyBooksActivity.class);
+                Intent intent = new Intent(getContext(), MyBookList.class);
                 startActivity(intent);
             }
         });

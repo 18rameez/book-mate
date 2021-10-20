@@ -27,25 +27,16 @@ public  interface APIInterface {
 
     @FormUrlEncoded
     @POST("/api/get_user_id.php")
-    Call<User> getUser(@Field("id") String firebaseId) ;
+    Call<User> getUser(@Field("id") String userId) ;
 
     @FormUrlEncoded
-    @POST("/api/get_user.php")
-    Call<User> getUserId(@Field("id") String id) ;
+    @POST("/api/get_user_id_from_firebase.php")
+    Call<User> getUserFromFirebaseId(@Field("id") String firebaseId) ;
+
+
 
     @Multipart
     @POST("/api/add_book.php")
-    // can be used ResponseBody if needed
-    Call<ResponseBody> addBook(@Part("book_name") RequestBody bookName,
-                               @Part("book_price") RequestBody bookPrice,
-                               @Part("book_author") RequestBody bookAuthor,
-                               @Part("book_language") RequestBody bookLanguage,
-                               @Part("book_category") RequestBody bookCategory,
-                               @Part("book_description") RequestBody bookDescription,
-                               @Part List<MultipartBody.Part> images);
-
-    @Multipart
-    @POST("/api/add_book_without_image.php")
     Call<ResponseBody> addBookWithoutImage(@Part("book_name") RequestBody bookName,
                                @Part("book_price") RequestBody bookPrice,
                                @Part("user_id") RequestBody userId,
@@ -53,7 +44,8 @@ public  interface APIInterface {
                                @Part("book_language") RequestBody bookLanguage,
                                @Part("book_description") RequestBody bookDescription,
                                @Part("book_date")RequestBody publishDate,
-                               @Part("book_category")RequestBody bookCategory);
+                               @Part("book_category")RequestBody bookCategory,
+                               @Part("book_image")RequestBody bookImage);
 
 
     @Multipart
@@ -65,6 +57,11 @@ public  interface APIInterface {
     @FormUrlEncoded
     @POST("/api/get_book_list.php")
     Call<List<Book>> getLatestBooks(@Field("user_id")String Token) ;
+
+
+    @FormUrlEncoded
+    @POST("/api/get_user_added_books.php")
+    Call<List<Book>> getUserAddedBooks(@Field("user_id")String userId) ;
 
     @FormUrlEncoded
     @POST("/api/get_book_list_filter.php")
@@ -84,7 +81,7 @@ public  interface APIInterface {
 
     @FormUrlEncoded
     @POST("/api/search_books.php")
-    Call<List<Book>> searchBook(@Field("search_query")String Token) ;
+    Call<List<Book>> searchBook(@Field("search_query")String Token, @Field("user_id")String userId) ;
 
     @FormUrlEncoded
     @POST("/api/add_user_details.php")
@@ -92,6 +89,19 @@ public  interface APIInterface {
                                         @Field( "user_name")String userName,
                                         @Field( "user_email")String userEmail) ;
 
+
+    @FormUrlEncoded
+    @POST("/api/delete_book.php")
+    Call<ResponseBody> deleteBook(@Field("book_id")String bookId) ;
+
+    @FormUrlEncoded
+    @POST("/api/add_feedback.php")
+    Call<ResponseBody> addFeedback(@Field("user_id")String user_id,@Field("feedback")String feedback,@Field("date")String date) ;
+
+
+    @FormUrlEncoded
+    @POST("/api/add_complaint.php")
+    Call<ResponseBody> addComplaint(@Field("user_id")String user_id,@Field("complaint")String feedback,@Field("date")String date) ;
 
 }
 

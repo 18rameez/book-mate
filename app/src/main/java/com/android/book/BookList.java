@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,6 +37,9 @@ public class BookList extends AppCompatActivity {
     String queryValue, queryType;
     String userId = "1" ;
 
+    SharedPreferences sharedPreferences ;
+    SharedPreferences.Editor editor ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +53,12 @@ public class BookList extends AppCompatActivity {
         recyclerView =bookBinding.recyclerView;
         progressBar=bookBinding.progressBar;
         apiInterface = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
+
+
+        sharedPreferences = getApplicationContext().getSharedPreferences("myPref", Context.MODE_PRIVATE);
+        editor= sharedPreferences.edit();
+        userId = sharedPreferences.getString("user_id","");
+        Log.v("user_id",userId);
 
         if (queryType.equalsIgnoreCase("category")){
 

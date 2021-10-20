@@ -1,6 +1,8 @@
 package com.android.book.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -49,6 +51,9 @@ public class SearchFragment extends Fragment {
     String queryValue;
     List<Book>bookList;
     CircularProgressIndicator progressBar;
+    SharedPreferences sharedPreferences ;
+    SharedPreferences.Editor editor ;
+    String userId;
 
     @Nullable
     @Override
@@ -62,6 +67,13 @@ public class SearchFragment extends Fragment {
         progressBar= view.findViewById(R.id.progress_bar);
 
         ((MainActivity)getActivity()).changeActionBar("Search");
+
+
+
+        sharedPreferences = getContext().getSharedPreferences("myPref", Context.MODE_PRIVATE);
+        editor= sharedPreferences.edit();
+        userId = sharedPreferences.getString("user_id","");
+        Log.v("user_id",userId);
 
         edtSearch = view.findViewById(R.id.edt_search);
         edtSearch.addTextChangedListener(new TextWatcher() {
@@ -94,7 +106,7 @@ public class SearchFragment extends Fragment {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        Call<List<Book>> call = apiInterface.searchBook(queryValue);
+        Call<List<Book>> call = apiInterface.searchBook(queryValue,userId);
 
         call.enqueue(new Callback<List<Book>>() {
             @Override

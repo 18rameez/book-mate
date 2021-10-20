@@ -42,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
     DatabaseReference reference;
     APIInterface apiInterface;
     String firebaseUserId;
+    TextView resetPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
         edt_password = findViewById(R.id.edt_password);
         btn_login = findViewById(R.id.login);
         btn_sign_up = findViewById(R.id.sign_up);
+        resetPassword= findViewById(R.id.btn_password);
 
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,6 +91,14 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        resetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(),ForgotPassword.class);
+                startActivity(intent);
+            }
+        });
+
         apiInterface = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
 
     }
@@ -100,16 +110,25 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
-                    Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
 
-                    FirebaseUser firebaseUser = auth.getCurrentUser();
-                    firebaseUserId =  firebaseUser.getUid();
-                    editor.putBoolean("isLogin",true);
-                    editor.putBoolean("firebaseId",true);
-                    editor.commit();
-                    getUserDetails();
-                    Intent intent =  new Intent(LoginActivity.this,MainActivity.class);
-                    startActivity(intent);
+                  FirebaseUser firebaseUser = auth.getCurrentUser();
+                  if (firebaseUser.isEmailVerified()) {
+
+                      Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+
+                      firebaseUserId =  firebaseUser.getUid();
+                      editor.putBoolean("isLogin",true);
+                      editor.putBoolean("firebaseId",true);
+                      editor.commit();
+                      getUserDetails();
+                      Intent intent =  new Intent(LoginActivity.this,MainActivity.class);
+                      startActivity(intent);
+
+                  }else {
+
+                      Toast.makeText(LoginActivity.this, "Email is not verified, please check your email", Toast.LENGTH_SHORT).show();
+                  }
+
                 }else {
                     Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
                 }
@@ -120,7 +139,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void getUserDetails() {
 
-        Call<User> call = apiInterface.getUser(firebaseUserId);
+        Call<User> call = apiInterface.getUserFromFirebaseId(firebaseUserId);
 
         call.enqueue(new Callback<User>() {
             @Override

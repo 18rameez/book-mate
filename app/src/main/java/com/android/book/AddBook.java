@@ -13,10 +13,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.FileUtils;
 import android.text.format.DateFormat;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -27,14 +30,18 @@ import com.android.book.adapter.ImageAdapter;
 import com.android.book.models.Book;
 import com.android.book.utils.APIInterface;
 import com.android.book.utils.RetrofitClientInstance;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
 import com.squareup.okhttp.MultipartBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -65,12 +72,14 @@ public class AddBook extends AppCompatActivity {
     TextInputEditText etBookName, etBookPrice, etBookAuthor, etBookLanguage, etBookDescription, etBookCategory;
     RecyclerView recycSelectedImage;
     Button addButton ;
+    CircularProgressIndicator progressIndicator;
     ImageView btnSelectImage;
     ArrayList<Uri> selectedImageUri =  new ArrayList<Uri>();
     List<MultipartBody.Part> parts = new ArrayList<>();
 
-    RequestBody bookName, bookPrice, bookAuthor, bookLanguage, bookCategory, bookDescription, bookAddedDate, userIdRequestBody;
+    RequestBody bookName, bookPrice, bookAuthor, bookLanguage, bookCategory, bookDescription, bookAddedDate, userIdRequestBody, imageRequestBody;
     String publishDate, userId;
+    String encodedImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +92,7 @@ public class AddBook extends AppCompatActivity {
         etBookLanguage =  findViewById(R.id.book_langugae);
         etBookDescription =  findViewById(R.id.book_description);
         etBookCategory =  findViewById(R.id.book_category);
+        progressIndicator= findViewById(R.id.progress_bar);
 
         addButton = findViewById(R.id.add_button);
         btnSelectImage = findViewById(R.id.select_image);
@@ -105,11 +115,10 @@ public class AddBook extends AppCompatActivity {
                 bookDescription = createPartFromString(etBookDescription.getText().toString());
                 bookAddedDate  = createPartFromString(publishDate);
                 userIdRequestBody  = createPartFromString(userId);
+                imageRequestBody  = createPartFromString(encodedImage);
 
-                for (int i=0; i < selectedImageUri.size(); i++){
-                    Log.v("times_run"," "+ i);
-                    parts.add(prepareFilePart("book_images[]",selectedImageUri.get(i)));
-                }
+                progressIndicator.setVisibility(View.VISIBLE);
+                addButton.setVisibility(View.GONE);
 
                 sendBookRequest(bookName,bookPrice,bookAuthor,bookLanguage,bookCategory,bookDescription,parts);
 
@@ -120,12 +129,13 @@ public class AddBook extends AppCompatActivity {
         btnSelectImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (selectedImageUri.size() < 4){
+               /* if (selectedImageUri.size() < 4){
                     selectImageFromGallery();
                 }else {
                     Toast.makeText(AddBook.this, "You have already selected 4 images", Toast.LENGTH_SHORT).show();
-                }
+                }*/
 
+                selectImageFromGallery();
             }
         });
 
@@ -240,20 +250,45 @@ public class AddBook extends AppCompatActivity {
         if (requestCode == PICK_IMAGE&& resultCode == Activity.RESULT_OK && data !=null) {
             //TODO: action
 
+            /* selectedImageUri.add(data.getData());
+              recycSelectedImage.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
+             recycSelectedImage.setAdapter(new ImageAdapter(this,selectedImageUri));*/
 
-                selectedImageUri.add(data.getData());
-                recycSelectedImage.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
-                recycSelectedImage.setAdapter(new ImageAdapter(this,selectedImageUri));
+              Uri singleImageUri = data.getData();
+            InputStream imageStream = null;
+            try {
+                imageStream = getContentResolver().openInputStream(singleImageUri);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+             encodedImage = encodeImage(selectedImage);
 
+            Log.v("img-bitmap",encodedImage);
+
+
+            byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0,decodedString.length);
+            btnSelectImage.setImageBitmap(decodedByte);
 
 
         }
     }
 
+    private String encodeImage(Bitmap bitmap) {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
+        byte[] b = baos.toByteArray();
+        String encImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+        return encImage;
+    }
+
     private void sendBookRequest(RequestBody bookName, RequestBody bookPrice, RequestBody bookAuthor, RequestBody bookLanguage, RequestBody bookCategory, RequestBody bookDescription, List<MultipartBody.Part> parts) {
 
      apiInterface = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-      Call<ResponseBody> addBook = apiInterface.addBookWithoutImage(bookName,bookPrice,userIdRequestBody,bookAuthor,bookLanguage,bookDescription,bookAddedDate,bookCategory);
+      Call<ResponseBody> addBook = apiInterface.addBookWithoutImage(bookName,bookPrice,userIdRequestBody,bookAuthor,bookLanguage,bookDescription,bookAddedDate,bookCategory,imageRequestBody);
 
       addBook.enqueue(new Callback<ResponseBody>() {
           @Override
@@ -262,6 +297,9 @@ public class AddBook extends AppCompatActivity {
               System.out.println("onResponse");
               if(response.isSuccessful()){
 
+                  progressIndicator.setVisibility(View.GONE);
+                  addButton.setVisibility(View.VISIBLE);
+
                   etBookName.setText("");
                   etBookPrice.setText("");
                   etBookAuthor.setText("");
@@ -269,7 +307,7 @@ public class AddBook extends AppCompatActivity {
                   etBookDescription.setText("");
                   etBookCategory.setText("");
 
-                  Toast.makeText(AddBook.this, "Your book has been added...", Toast.LENGTH_SHORT).show();
+                  Toast.makeText(AddBook.this, "Your book has been successfully added", Toast.LENGTH_SHORT).show();
 
 
               }else {

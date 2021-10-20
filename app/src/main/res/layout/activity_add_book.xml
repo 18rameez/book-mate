@@ -30,6 +30,7 @@
             android:id="@+id/recycler_view_image"
             android:layout_width="match_parent"
             android:layout_height="120dp"
+            android:visibility="gone"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
             />
@@ -37,6 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:boxStrokeColor="@color/purple_200"
+            android:layout_marginTop="10dp"
             android:hint="Book Name">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -129,6 +131,17 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:text="Add Book"
+            />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:indeterminate="true"
+            app:indicatorColor="@color/green_700"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center"
             />
 
     </LinearLayout>

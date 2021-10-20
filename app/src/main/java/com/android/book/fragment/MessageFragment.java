@@ -68,6 +68,8 @@ public class MessageFragment extends Fragment {
 
                     Message message = dataSnapshot.getValue(Message.class);
 
+                   Log.v("get-sender",message.getSender());
+                    Log.v("get-receiver",message.getReceiver());
 
                     if (message.getSender().equals(currentUserFirebaseId)){
                         userList.add(message.getReceiver());

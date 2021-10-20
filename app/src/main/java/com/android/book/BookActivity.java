@@ -17,6 +17,7 @@ import com.android.book.models.Book;
 import com.android.book.models.User;
 import com.android.book.utils.APIInterface;
 import com.android.book.utils.RetrofitClientInstance;
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 
 import retrofit2.Call;
@@ -51,6 +52,7 @@ public class BookActivity extends AppCompatActivity {
         bookLanguage=bookBinding.bookLanguage;
         bookAddedDate=bookBinding.bookAddedDate;
         chatButton=bookBinding.chatButton;
+        bookImages = findViewById(R.id.thumbnail);
 
 
         chatButton.setOnClickListener(new View.OnClickListener() {
@@ -58,6 +60,7 @@ public class BookActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), ChatScreen.class);
                 intent.putExtra("firebaseId",user.getFirebaseId());
+                Log.v("user-firebase",user.getFirebaseId());
                 startActivity(intent);
             }
         });
@@ -121,6 +124,7 @@ public class BookActivity extends AppCompatActivity {
         bookPrice.setText("₹"+book.getBookPrice());
         bookDescription.setText(book.getBookDescription());
         bookLanguage.setText("Language: "+book.getBookLanguage());
+        Glide.with(getApplicationContext()).load(book.getBookThumbnail()).into(bookImages);
     }
 
 
@@ -138,7 +142,7 @@ public class BookActivity extends AppCompatActivity {
                     user = response.body();
 
                 }
-                System.out.println("onResponse");
+                System.out.println("onResponse-user-details");
             }
 
             @Override
