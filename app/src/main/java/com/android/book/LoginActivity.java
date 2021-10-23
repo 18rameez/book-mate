@@ -43,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     APIInterface apiInterface;
     String firebaseUserId;
     TextView resetPassword;
+    String email, password="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,10 +76,23 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String email = edt_email.getText().toString();
-                String password = edt_password.getText().toString();
+                 email = edt_email.getText().toString();
+                 password = edt_password.getText().toString();
 
-                login(email, password);
+                if (email.equalsIgnoreCase("")){
+
+                    Toast.makeText(LoginActivity.this, "Please enter your Registered Email", Toast.LENGTH_SHORT).show();
+
+                }else if (password.equalsIgnoreCase("")) {
+
+                    Toast.makeText(LoginActivity.this, "Please enter your password", Toast.LENGTH_SHORT).show();
+
+                }else {
+
+                    login(email, password);
+                }
+
+
             }
         });
 
@@ -126,7 +140,7 @@ public class LoginActivity extends AppCompatActivity {
 
                   }else {
 
-                      Toast.makeText(LoginActivity.this, "Email is not verified, please check your email", Toast.LENGTH_SHORT).show();
+                      Toast.makeText(LoginActivity.this, "Email is not verified, please check your inbox", Toast.LENGTH_SHORT).show();
                   }
 
                 }else {

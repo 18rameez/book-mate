@@ -26,8 +26,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.book.adapter.BottomSheetAdapter;
+import com.android.book.adapter.BottomSheetRecyclerAdapter;
+import com.android.book.adapter.CategoryAdapter;
 import com.android.book.adapter.ImageAdapter;
 import com.android.book.models.Book;
+import com.android.book.models.Category;
 import com.android.book.utils.APIInterface;
 import com.android.book.utils.RetrofitClientInstance;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
@@ -67,6 +71,9 @@ public class AddBook extends AppCompatActivity {
     APIInterface apiInterface;
     SharedPreferences sharedPreferences ;
     SharedPreferences.Editor editor ;
+    String selectedCategory = "";
+    String selectedCategoryId = "";
+    List<Category> categoryList = new ArrayList<>();
 
 
     TextInputEditText etBookName, etBookPrice, etBookAuthor, etBookLanguage, etBookDescription, etBookCategory;
@@ -77,9 +84,9 @@ public class AddBook extends AppCompatActivity {
     ArrayList<Uri> selectedImageUri =  new ArrayList<Uri>();
     List<MultipartBody.Part> parts = new ArrayList<>();
 
-    RequestBody bookName, bookPrice, bookAuthor, bookLanguage, bookCategory, bookDescription, bookAddedDate, userIdRequestBody, imageRequestBody;
+    RequestBody bookName, bookPrice, bookAuthor, bookLanguage, bookCategory, bookDescription, bookAddedDate, userIdRequestBody, imageRequestBody ;
     String publishDate, userId;
-    String encodedImage;
+    String encodedImage ="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,22 +114,52 @@ public class AddBook extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                bookName = createPartFromString(etBookName.getText().toString());
-                bookPrice = createPartFromString(etBookPrice.getText().toString());
-                bookAuthor = createPartFromString(etBookAuthor.getText().toString());
-                bookLanguage = createPartFromString(etBookLanguage.getText().toString());
-                bookCategory = createPartFromString(etBookCategory.getText().toString());
-                bookDescription = createPartFromString(etBookDescription.getText().toString());
-                bookAddedDate  = createPartFromString(publishDate);
-                userIdRequestBody  = createPartFromString(userId);
-                imageRequestBody  = createPartFromString(encodedImage);
+                if (encodedImage.equalsIgnoreCase("")){
 
-                progressIndicator.setVisibility(View.VISIBLE);
-                addButton.setVisibility(View.GONE);
+                    Toast.makeText(AddBook.this, "Image is missing", Toast.LENGTH_SHORT).show();
 
-                sendBookRequest(bookName,bookPrice,bookAuthor,bookLanguage,bookCategory,bookDescription,parts);
+                }else if(etBookName.getText().toString().equalsIgnoreCase("")){
 
+                    Toast.makeText(AddBook.this, "Book name is missing", Toast.LENGTH_SHORT).show();
 
+                }else if(etBookAuthor.getText().toString().equalsIgnoreCase("")){
+
+                    Toast.makeText(AddBook.this, "Author name is missing", Toast.LENGTH_SHORT).show();
+                }
+                else if(etBookPrice.getText().toString().equalsIgnoreCase("")){
+
+                    Toast.makeText(AddBook.this, "Book price is missing", Toast.LENGTH_SHORT).show();
+                }
+                else if(etBookLanguage.getText().toString().equalsIgnoreCase("")){
+
+                    Toast.makeText(AddBook.this, "Book language is missing", Toast.LENGTH_SHORT).show();
+                }
+                else if(etBookCategory.getText().toString().equalsIgnoreCase("")){
+
+                    Toast.makeText(AddBook.this, "Book category is missing", Toast.LENGTH_SHORT).show();
+
+                }else if(etBookDescription.getText().toString().equalsIgnoreCase("")){
+
+                    Toast.makeText(AddBook.this, "Book description is missing", Toast.LENGTH_SHORT).show();
+
+                } else {
+
+                    progressIndicator.setVisibility(View.VISIBLE);
+                    addButton.setVisibility(View.GONE);
+
+                    bookName = createPartFromString(etBookName.getText().toString());
+                    bookPrice = createPartFromString(etBookPrice.getText().toString());
+                    bookAuthor = createPartFromString(etBookAuthor.getText().toString());
+                    bookLanguage = createPartFromString(etBookLanguage.getText().toString());
+                    bookCategory = createPartFromString(selectedCategoryId);
+                    bookDescription = createPartFromString(etBookDescription.getText().toString());
+                    bookAddedDate  = createPartFromString(publishDate);
+                    userIdRequestBody  = createPartFromString(userId);
+                    imageRequestBody  = createPartFromString(encodedImage);
+
+                    sendBookRequest(bookName,bookPrice,bookAuthor,bookLanguage,bookCategory,bookDescription,parts);
+
+                }
             }
         });
 
@@ -138,6 +175,13 @@ public class AddBook extends AppCompatActivity {
                 selectImageFromGallery();
             }
         });
+        etBookCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                setBottomSheetForCategory();
+            }
+        });
 
 
         Date c = Calendar.getInstance().getTime();
@@ -147,7 +191,27 @@ public class AddBook extends AppCompatActivity {
         publishDate = df.format(c);
 
 
+        getAllCategory();
 
+    }
+
+    private void setBottomSheetForCategory() {
+
+
+        BottomSheetAdapter bottomSheetAdapter = new BottomSheetAdapter(new BottomSheetRecyclerAdapter.ItemClickListener(){
+
+            @Override
+            public void onItemClick(int position) {
+
+                selectedCategory +=  categoryList.get(position).getCategoryName() + ", ";
+                selectedCategoryId += categoryList.get(position).getCategoryId() + ",";
+                etBookCategory.setText(selectedCategory);
+                Log.v("selected-category",selectedCategoryId);
+
+            }
+        },categoryList);
+
+        bottomSheetAdapter.show(getSupportFragmentManager(),bottomSheetAdapter.getTag());
     }
 
     private void sendTest(Uri fileUri) throws IOException {
@@ -320,10 +384,14 @@ public class AddBook extends AppCompatActivity {
           @Override
           public void onFailure(Call<ResponseBody> call, Throwable t) {
 
+              progressIndicator.setVisibility(View.GONE);
+              addButton.setVisibility(View.VISIBLE);
+
               String message = t.getMessage();
               Log.d("failure12", message);
               System.out.println("onFailure");
               System.out.println(t.fillInStackTrace());
+
           }
       });
 
@@ -370,5 +438,33 @@ public class AddBook extends AppCompatActivity {
         } catch (final IOException e) {
             return "did not work";
         }
+    }
+
+
+    private void getAllCategory() {
+
+        apiInterface = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
+        Call<List<Category>> call = apiInterface.getAllCategory("Token");
+
+        call.enqueue(new Callback<List<Category>>() {
+            @Override
+            public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
+
+                System.out.println("onResponse");
+                categoryList = response.body();
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Category>> call, Throwable t) {
+
+                String message = t.getMessage();
+                Log.d("failure12", message);
+                System.out.println("onFailure");
+                System.out.println(t.fillInStackTrace());
+            }
+        });
+
+
     }
 }

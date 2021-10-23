@@ -19,6 +19,14 @@ import com.android.book.LoginActivity;
 import com.android.book.MainActivity;
 import com.android.book.MyBookList;
 import com.android.book.R;
+import com.android.book.models.User;
+import com.android.book.utils.APIInterface;
+import com.android.book.utils.RetrofitClientInstance;
+import com.google.firebase.auth.FirebaseAuth;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class UserFragment extends Fragment {
 
@@ -26,6 +34,9 @@ public class UserFragment extends Fragment {
     TextView log_out, complaint, feedback, myBooks, pendingBooks, editProfile, settings;
     SharedPreferences sharedPreferences ;
     SharedPreferences.Editor editor ;
+    APIInterface apiInterface;
+    String firebaseUserId;
+    TextView user_name_view, user_email_view;
 
     @Nullable
     @Override
@@ -40,9 +51,13 @@ public class UserFragment extends Fragment {
         pendingBooks = view.findViewById(R.id.pending_books);
         editProfile = view.findViewById(R.id.edit_profile);
         settings =view.findViewById(R.id.settings_view);
+        user_name_view =view.findViewById(R.id.user_name);
+        user_email_view =view.findViewById(R.id.user_email);
 
         sharedPreferences = getContext().getSharedPreferences("myPref", Context.MODE_PRIVATE);
         editor= sharedPreferences.edit();
+
+        apiInterface = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
 
         log_out.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,7 +98,40 @@ public class UserFragment extends Fragment {
         });
 
 
+        getUserDetails();
 
         return view ;
+    }
+
+
+    private void getUserDetails() {
+
+        firebaseUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        Call<User> call = apiInterface.getUserFromFirebaseId(firebaseUserId);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+
+                if (response.isSuccessful()) {
+
+                    User user = response.body();
+                    user_name_view.setText(user.getUserName());
+                    user_email_view.setText(user.getUserEmail());
+
+                }
+                System.out.println("onResponse");
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+
+                String message = t.getMessage();
+                System.out.println("onFailure");
+                System.out.println(t.fillInStackTrace());
+            }
+
+        });
+
     }
 }

@@ -104,6 +104,7 @@
                 android:id="@+id/book_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:editable="false"
                 android:background="@color/white"
                 />
         </com.google.android.material.textfield.TextInputLayout>

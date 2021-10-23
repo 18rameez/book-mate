@@ -139,6 +139,10 @@ public class MessageFragment extends Fragment {
                     }
                 }
 
+                if (users.size()==0){
+                    Toast.makeText(getContext(), "Inbox is empty", Toast.LENGTH_SHORT).show();
+                }
+
                 messageListAdapter = new MessageListAdapter(getContext(), users, new MessageListAdapter.OnClickListener() {
                     @Override
                     public void onClick(int position) {

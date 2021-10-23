@@ -49,6 +49,8 @@ public class SignUpActivity extends AppCompatActivity {
     APIInterface apiInterface;
     String userFirebaseId, user_id_from_database;
 
+    String name, email, password ="";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,11 +74,28 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String name = edt_name.getText().toString();
-                String email = edt_email.getText().toString();
-                String password = edt_password.getText().toString();
+                  name = edt_name.getText().toString();
+                 email = edt_email.getText().toString();
+                 password = edt_password.getText().toString();
 
-               signUp(name,email, password);
+                if (name.equalsIgnoreCase("")){
+
+                    Toast.makeText(SignUpActivity.this, "Please enter your name", Toast.LENGTH_SHORT).show();
+
+                }else if (email.equalsIgnoreCase("")) {
+
+                    Toast.makeText(SignUpActivity.this, "Please enter your email", Toast.LENGTH_SHORT).show();
+
+                }else if (password.equalsIgnoreCase("")){
+
+                    Toast.makeText(SignUpActivity.this, "Please enter your password", Toast.LENGTH_SHORT).show();
+
+                }else {
+
+                    signUp(name,email, password);
+                }
+
+
             }
         });
     }
@@ -91,7 +110,7 @@ public class SignUpActivity extends AppCompatActivity {
                           if (task.isSuccessful()){
 
 
-                             Toast.makeText(SignUpActivity.this, "Email verification link is sent to your email address. Verify and Login", Toast.LENGTH_SHORT).show();
+                             Toast.makeText(SignUpActivity.this, "Verification link is sent to your email address. Verify and Login", Toast.LENGTH_LONG).show();
                               FirebaseUser firebaseUser = auth.getCurrentUser();
                               userFirebaseId =  firebaseUser.getUid();
 

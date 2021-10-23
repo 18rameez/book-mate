@@ -2,6 +2,7 @@ package com.android.book.utils;
 
 import com.android.book.models.Book;
 import com.android.book.models.Category;
+import com.android.book.models.SearchResponse;
 import com.android.book.models.User;
 import com.android.book.resposne_model.InsertResponse;
 
@@ -81,7 +82,7 @@ public  interface APIInterface {
 
     @FormUrlEncoded
     @POST("/api/search_books.php")
-    Call<List<Book>> searchBook(@Field("search_query")String Token, @Field("user_id")String userId) ;
+    Call<SearchResponse> searchBook(@Field("search_query")String Token, @Field("user_id")String userId) ;
 
     @FormUrlEncoded
     @POST("/api/add_user_details.php")

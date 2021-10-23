@@ -39,7 +39,7 @@
                     android:layout_height="fill_parent"
                     android:id="@+id/profile_photo"
                     android:scaleType="fitXY"
-                    android:src="@drawable/book_cover" />
+                    android:src="@drawable/user_icon" />
 
             </androidx.cardview.widget.CardView>
 
@@ -51,15 +51,19 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/user_name"
                     android:layout_width="match_parent"
+                    android:textStyle="bold"
                     android:layout_height="wrap_content"
-                    android:text="User Name"
+                    android:text="Loading..."
                     />
 
                 <TextView
+                    android:id="@+id/user_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="user-email@gmail.com"
+                    android:textStyle="bold"
+                    android:text="Loading..."
                     />
 
             </LinearLayout>
@@ -154,6 +158,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:visibility="gone"
             android:background="#e5e5e5"
             />
 
@@ -164,6 +169,7 @@
             android:drawableRight="@drawable/arrow_right_icon"
             android:drawableLeft="@drawable/settings_icon"
             android:drawablePadding="10dp"
+            android:visibility="gone"
             android:padding="15dp"
             android:textStyle="bold"
             android:text="Settings"/>

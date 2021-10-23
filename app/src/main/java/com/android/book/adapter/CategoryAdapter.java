@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.book.R;
 import com.android.book.models.Category;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -52,7 +53,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
 
         Category category = categoryList.get(position);
         holder.GenreTitleView.setText(category.getCategoryName());
-        holder.genre_image_view.setImageResource( R.drawable.personal_development);
+        Glide.with(context).load(category.getCategoryImage()).into(holder.genre_image_view);
         holder.genreParentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

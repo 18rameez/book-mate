@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -33,7 +34,16 @@ public class ForgotPassword extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                sendPasswordResetMail(edtEmail.getText().toString());
+                if (edtEmail.getText().toString().equalsIgnoreCase("")){
+
+                    Toast.makeText(ForgotPassword.this, "Enter registered Email", Toast.LENGTH_SHORT).show();
+
+                }else{
+
+                    sendPasswordResetMail(edtEmail.getText().toString());
+                }
+
+
             }
         });
 
@@ -48,9 +58,17 @@ public class ForgotPassword extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
 
-                            Toast.makeText(ForgotPassword.this, "Password reset email is sent.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ForgotPassword.this, "Password reset email is sent. Click on reset link and change password", Toast.LENGTH_LONG).show();
                         }
                     }
-                });
+                })
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+                Toast.makeText(ForgotPassword.this, "Invalid email or Not registered with Book Mate", Toast.LENGTH_LONG).show();
+
+            }
+        });
     }
 }

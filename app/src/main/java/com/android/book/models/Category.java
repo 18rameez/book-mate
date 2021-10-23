@@ -12,6 +12,18 @@ public  class Category {
     @Expose
     private String categoryName;
 
+    @SerializedName("category_image")
+    @Expose
+    private String categoryImage;
+
+    public String getCategoryImage() {
+        return categoryImage;
+    }
+
+    public void setCategoryImage(String categoryImage) {
+        this.categoryImage = categoryImage;
+    }
+
     public String getCategoryId() {
         return categoryId;
     }

@@ -29,6 +29,7 @@ import com.android.book.adapter.BookListAdapter;
 import com.android.book.adapter.CategoryAdapter;
 import com.android.book.models.Book;
 import com.android.book.models.Category;
+import com.android.book.models.SearchResponse;
 import com.android.book.utils.APIInterface;
 import com.android.book.utils.RetrofitClientInstance;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
@@ -86,6 +87,9 @@ public class SearchFragment extends Fragment {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
 
+                if (bookList != null){
+                    bookList.clear();
+                }
                 queryValue = String.valueOf(charSequence);
                 searchBook(queryValue);
 
@@ -106,19 +110,19 @@ public class SearchFragment extends Fragment {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        Call<List<Book>> call = apiInterface.searchBook(queryValue,userId);
+        Call<SearchResponse> call = apiInterface.searchBook(queryValue,userId);
 
-        call.enqueue(new Callback<List<Book>>() {
+        call.enqueue(new Callback<SearchResponse>() {
             @Override
-            public void onResponse(Call<List<Book>> call, Response<List<Book>> response) {
+            public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
 
                 System.out.println("onResponse");
-                bookList = response.body();
+                SearchResponse searchResponse = response.body();
                 progressBar.setVisibility(View.GONE);
                 categoryRecycler.setVisibility(View.GONE);
 
-                if (bookList != null){
-
+                if (response.body().getStatus()){
+                    bookList= searchResponse.getBook();
                     searchRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
                     BookListAdapter bookListAdapter = new BookListAdapter(getContext(), bookList, new BookListAdapter.OnClickListener() {
                         @Override
@@ -132,16 +136,18 @@ public class SearchFragment extends Fragment {
                     });
                     searchRecyclerView.setAdapter(bookListAdapter);
                 }else {
-
-                    Toast.makeText(getContext(), "server is down, try again", Toast.LENGTH_SHORT).show();
+                    
+                    if (bookList != null){
+                        bookList.clear();
+                    }
+                    Toast.makeText(getContext(), "No books found", Toast.LENGTH_SHORT).show();
                 }
-
 
 
             }
 
             @Override
-            public void onFailure(Call<List<Book>> call, Throwable t) {
+            public void onFailure(Call<SearchResponse> call, Throwable t) {
 
                 String message = t.getMessage();
                 Log.d("failure12", message);
